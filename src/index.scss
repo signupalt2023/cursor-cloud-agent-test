@@ -1,0 +1,11 @@
+@use "../node_modules/normalize.css/normalize.css";
+// @use "./_includes/styles/icons" as *;
+@use "./_includes/styles/common";
+
+h1 {
+  @include common.red-text;
+}
+
+h2 {
+  color: green;
+}
