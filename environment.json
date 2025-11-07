@@ -1,0 +1,10 @@
+{
+  "install": "./init-gpg.sh && npm install",
+  "terminals": [
+    {
+      "name": "Dev Server",
+      "command": "npm run dev"
+    }
+  ]
+}
+
