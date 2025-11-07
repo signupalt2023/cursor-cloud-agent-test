@@ -1,4 +1,5 @@
 {
+  "agentCanUpdateSnapshot": true,
   "install": "./init-gpg.sh && npm install",
   "terminals": [
     {
@@ -7,4 +8,3 @@
     }
   ]
 }
-
