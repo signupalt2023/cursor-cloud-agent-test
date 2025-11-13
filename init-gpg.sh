@@ -23,7 +23,9 @@ export GNUPGHOME="${GNUPGHOME:-$HOME/.gnupg}"
 mkdir -p "$GNUPGHOME"
 chmod 700 "$GNUPGHOME"
 
-# Configure gpg-agent for non-interactive operation
+# Configure gpg-agent for non-interactive operation. Allowing a preset passphrase allows
+# us to enter the password during cloud agent initialization, so it doesn't have to be entered
+# after each commit.
 cat > "$GNUPGHOME/gpg-agent.conf" <<EOF
 allow-preset-passphrase
 allow-loopback-pinentry
@@ -31,14 +33,13 @@ default-cache-ttl 28800
 max-cache-ttl 86400
 EOF
 
-# Start/reload agent to apply config
+# Ensure the above configuration is applied.
 gpgconf --kill gpg-agent 2>/dev/null || true
 gpgconf --launch gpg-agent
 
 # Decode and import private key (base64 -> ASCII-armored GPG key)
 echo "$GPG_PRIVATE_KEY_BASE64" | base64 -d | gpg --batch --import 2>/dev/null
 
-# Get keygrip and fingerprint for the imported key
 KEY_INFO=$(gpg --with-colons --with-keygrip --list-secret-keys "$MY_GIT_EMAIL" 2>/dev/null)
 KEYGRIP=$(echo "$KEY_INFO" | awk -F: '/^grp:/ {print $10; exit}')
 FINGERPRINT=$(echo "$KEY_INFO" | awk -F: '/^fpr:/ {print $10; exit}')
@@ -50,7 +51,9 @@ if [[ -z "$KEYGRIP" ]] || [[ -z "$FINGERPRINT" ]]; then
     exit 1
 fi
 
-# Find and use gpg-preset-passphrase (Ubuntu typically has it in /usr/lib/gnupg)
+# Find and use gpg-preset-passphrase (Ubuntu typically has it in /usr/lib/gnupg).
+# This is what allows us to preload the passphrase, to ensure the agent doesn't require any
+# user interaction for signing.
 GPG_PRESET=""
 for preset_path in \
     "/usr/lib/gnupg/gpg-preset-passphrase" \
@@ -65,11 +68,13 @@ done
 
 if [[ -z "$GPG_PRESET" ]]; then
     echo "Error: gpg-preset-passphrase not found. Installing gnupg2..." >&2
+    # gpg-preset-passphrase is only supported in GPG 2.0 or later. I think Ubuntu will have this
+    # by default, but if they don't, we'll install it.
     sudo apt-get update && sudo apt-get install -y gnupg2
     GPG_PRESET="/usr/lib/gnupg/gpg-preset-passphrase"
 fi
 
-# Preset the passphrase into gpg-agent cache
+# Load the passphrase into gpg-agent cache. This ensures gpg will never ask for the passphrase.
 printf '%s' "$GPG_PRIVATE_KEY_PASSPHRASE" | "$GPG_PRESET" --preset "$KEYGRIP"
 
 # Configure Git globally for automatic signing
@@ -79,7 +84,7 @@ git config --global user.signingkey "$FINGERPRINT"
 git config --global commit.gpgsign true
 git config --global gpg.program "gpg"
 
-# Verification - fail fast if signing doesn't work
+# Quick double check to make sure we can actually sign things without additional interaction.
 if echo "test" | gpg --batch --yes --pinentry-mode loopback \
     --local-user "$FINGERPRINT" --clearsign >/dev/null 2>&1; then
     echo "[OK] GPG signing configured successfully"
