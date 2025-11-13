@@ -4,3 +4,37 @@ title: Homepage!
 ---
 
 <h1>This is the home page.</h1>
+
+<h2>Required Cursor Secrets</h2>
+<p>The following environment variables must be configured in Cursor Dashboard → Cloud Agents → Secrets:</p>
+
+<table style="border-collapse: collapse; width: 100%; max-width: 900px;">
+  <thead>
+    <tr>
+      <th style="border: 2px solid #2d8659; padding: 12px; background-color: #e8f5e9; text-align: left;">Variable</th>
+      <th style="border: 2px solid #2d8659; padding: 12px; background-color: #e8f5e9; text-align: left;">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="border: 2px solid #2d8659; padding: 10px;"><strong>IS_RUNNING_CURSOR_CLOUD_AGENT</strong></td>
+      <td style="border: 2px solid #2d8659; padding: 10px;">Flag to enable GPG setup in cloud agents only. Prevents the script from running locally and breaking developers' GPG configurations. Example value: <code>1</code></td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid #2d8659; padding: 10px;"><strong>GPG_PRIVATE_KEY_BASE64</strong></td>
+      <td style="border: 2px solid #2d8659; padding: 10px;">Base64-encoded ASCII-armored GPG private key. This should be your existing GPG private key that you also use locally, exported and then base64 encoded to preserve formatting. Example value: <code>LS0tLS1CRUdJTiBQR1AgUFJJVkFURSBLRVkgQkxPQ0stLS0tLQo...</code> (truncated)</td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid #2d8659; padding: 10px;"><strong>GPG_PRIVATE_KEY_PASSPHRASE</strong></td>
+      <td style="border: 2px solid #2d8659; padding: 10px;">The passphrase that protects your GPG private key. Used to unlock the key for non-interactive signing. Example value: <code>my-secure-passphrase-123!</code></td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid #2d8659; padding: 10px;"><strong>MY_GIT_EMAIL</strong></td>
+      <td style="border: 2px solid #2d8659; padding: 10px;">Email address associated with your GPG key and Git commits. Must match the email in your GPG key's UID. Example value: <code>developer@example.com</code></td>
+    </tr>
+    <tr>
+      <td style="border: 2px solid #2d8659; padding: 10px;"><strong>MY_FULL_NAME</strong></td>
+      <td style="border: 2px solid #2d8659; padding: 10px;">Your full name as it should appear in Git commits. Should match the name in your GPG key for consistency. Example value: <code>Jane Developer</code></td>
+    </tr>
+  </tbody>
+</table>
