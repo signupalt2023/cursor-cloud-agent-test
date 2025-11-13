@@ -28,7 +28,6 @@ chmod 700 "$GNUPGHOME"
 # after each commit.
 cat > "$GNUPGHOME/gpg-agent.conf" <<EOF
 allow-preset-passphrase
-allow-loopback-pinentry
 default-cache-ttl 28800
 max-cache-ttl 86400
 EOF
@@ -85,7 +84,7 @@ git config --global commit.gpgsign true
 git config --global gpg.program "gpg"
 
 # Quick double check to make sure we can actually sign things without additional interaction.
-if echo "test" | gpg --batch --yes --pinentry-mode loopback \
+if echo "test" | gpg --batch --yes \
     --local-user "$FINGERPRINT" --clearsign >/dev/null 2>&1; then
     echo "[OK] GPG signing configured successfully"
     echo "  Name: $MY_FULL_NAME"
@@ -97,7 +96,7 @@ else
     gpg --list-secret-keys "$MY_GIT_EMAIL" >&2
     echo "" >&2
     echo "Attempting test signature with verbose output:" >&2
-    echo "test" | gpg --batch --yes --pinentry-mode loopback \
+    echo "test" | gpg --batch --yes \
         --local-user "$FINGERPRINT" --clearsign 2>&2 || true
     exit 1
 fi
