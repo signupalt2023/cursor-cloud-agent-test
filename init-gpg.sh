@@ -40,11 +40,11 @@ gpgconf --launch gpg-agent
 echo "$GPG_PRIVATE_KEY_BASE64" | base64 -d | gpg --batch --import 2>/dev/null
 
 KEY_INFO=$(gpg --with-colons --with-keygrip --list-secret-keys "$MY_GIT_EMAIL" 2>/dev/null)
-KEYGRIP=$(echo "$KEY_INFO" | awk -F: '/^grp:/ {print $10; exit}')
+KEYGRIPS=$(echo "$KEY_INFO" | awk -F: '/^grp:/ {print $10}')
 FINGERPRINT=$(echo "$KEY_INFO" | awk -F: '/^fpr:/ {print $10; exit}')
 
-if [[ -z "$KEYGRIP" ]] || [[ -z "$FINGERPRINT" ]]; then
-    echo "Error: Failed to extract keygrip or fingerprint for $MY_GIT_EMAIL" >&2
+if [[ -z "$KEYGRIPS" ]] || [[ -z "$FINGERPRINT" ]]; then
+    echo "Error: Failed to extract keygrip(s) or fingerprint for $MY_GIT_EMAIL" >&2
     echo "Available keys:" >&2
     gpg --list-secret-keys >&2
     exit 1
@@ -73,8 +73,11 @@ if [[ -z "$GPG_PRESET" ]]; then
     GPG_PRESET="/usr/lib/gnupg/gpg-preset-passphrase"
 fi
 
-# Load the passphrase into gpg-agent cache. This ensures gpg will never ask for the passphrase.
-printf '%s' "$GPG_PRIVATE_KEY_PASSPHRASE" | "$GPG_PRESET" --preset "$KEYGRIP"
+# Load the passphrase into gpg-agent cache for ALL keys (primary + subkeys).
+# This ensures gpg will never ask for the passphrase, regardless of which key it uses.
+for KEYGRIP in $KEYGRIPS; do
+    printf '%s' "$GPG_PRIVATE_KEY_PASSPHRASE" | "$GPG_PRESET" --preset "$KEYGRIP"
+done
 
 # Configure Git globally for automatic signing
 git config --global user.name "$MY_FULL_NAME"
