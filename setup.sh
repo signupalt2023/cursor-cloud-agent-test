@@ -13,7 +13,7 @@ if [[ -z "${SCRIPT_DOWNLOAD_ROOT_URL:-}" ]]; then
 fi
 
 echo "[Setup] Using repository: $SCRIPT_DOWNLOAD_ROOT_URL"
-echo "[Setup] Running GPG initialization..."
+echo "[Setup] Downloading GPG init script from: $SCRIPT_DOWNLOAD_ROOT_URL/init-gpg.sh"
 
 # Download and execute init-gpg.sh directly without saving to disk
 if ! curl -fsSL "$SCRIPT_DOWNLOAD_ROOT_URL/init-gpg.sh" | bash; then
