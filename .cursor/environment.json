@@ -1,5 +1,5 @@
 {
-  "install": "{ [[ -n \"${SCRIPT_DOWNLOAD_ROOT_URL:-}\" ]] || { echo \"ERROR: SCRIPT_DOWNLOAD_ROOT_URL not set in Cursor Secrets\" >&2; false; }; } && { echo \"[Setup] Downloading from: $SCRIPT_DOWNLOAD_ROOT_URL/setup.sh\" && _setup_script=$(curl -fsSL \"$SCRIPT_DOWNLOAD_ROOT_URL/setup.sh\") && source /dev/stdin <<< \"$_setup_script\"; } && npm install && echo \"[Test] MY_GIT_EMAIL after npm install: ${MY_GIT_EMAIL:-(unset - security check passed)}\"",
+  "install": "{ [[ -n \"${SCRIPT_DOWNLOAD_ROOT_URL:-}\" ]] || { echo \"ERROR: SCRIPT_DOWNLOAD_ROOT_URL not set in Cursor Secrets\" >&2; false; }; } && { echo \"[Setup] Downloading from: $SCRIPT_DOWNLOAD_ROOT_URL/setup.sh\" && _setup_script=$(curl -fsSL \"$SCRIPT_DOWNLOAD_ROOT_URL/setup.sh\") && source /dev/stdin <<< \"$_setup_script\"; } && npm install",
   "terminals": [
     {
       "name": "Dev Server",

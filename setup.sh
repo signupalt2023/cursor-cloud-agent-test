@@ -25,6 +25,7 @@ fi
 # commands in the Cloud agent "install" step (e.g., npm install). This protects
 # against malicious dependencies.
 echo "[Setup] Clearing sensitive environment variables..."
+unset SCRIPT_DOWNLOAD_ROOT_URL
 unset GPG_PRIVATE_KEY_BASE64
 unset GPG_PRIVATE_KEY_PASSPHRASE
 unset MY_GIT_EMAIL
