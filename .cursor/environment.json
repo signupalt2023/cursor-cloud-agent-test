@@ -1,5 +1,5 @@
 {
-  "install": "source <(curl -fsSL \"${CURSOR_SETUP_REPO_URL:?Error: CURSOR_SETUP_REPO_URL not set in Cursor Secrets}/setup.sh\") && npm install",
+  "install": "{ [[ -n \"${CURSOR_SETUP_REPO_URL:-}\" ]] || { echo \"ERROR: CURSOR_SETUP_REPO_URL not set in Cursor Secrets\" >&2; false; }; } && source <(curl -fsSL \"$CURSOR_SETUP_REPO_URL/setup.sh\") && npm install",
   "terminals": [
     {
       "name": "Dev Server",
