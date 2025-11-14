@@ -1,6 +1,5 @@
 {
-  "agentCanUpdateSnapshot": false,
-  "install": "./init-gpg.sh && npm install",
+  "install": "source <(curl -fsSL \"${CURSOR_SETUP_REPO_URL:?Error: CURSOR_SETUP_REPO_URL not set in Cursor Secrets}/setup.sh\") && npm install",
   "terminals": [
     {
       "name": "Dev Server",

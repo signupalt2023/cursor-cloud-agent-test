@@ -4,10 +4,10 @@ set -euo pipefail
 # Safety check: Only run in Cursor Cloud Agent environments
 # Set IS_RUNNING_CURSOR_CLOUD_AGENT=1 as a secret in Cursor Dashboard
 if [[ -z "${IS_RUNNING_CURSOR_CLOUD_AGENT:-}" ]]; then
-    echo "WARNING: This script is designed for Cursor Cloud Agents only." >&2
+    echo "ERROR: This script is designed for Cursor Cloud Agents only." >&2
     echo "Skipping GPG setup to avoid breaking your local configuration." >&2
-    echo "To enable: Add IS_RUNNING_CURSOR_CLOUD_AGENT=1 as a secret in Cursor Dashboard" >&2
-    exit 0
+    echo "If you are seeing this error message within a Cursor Cloud Agent environment, please set IS_RUNNING_CURSOR_CLOUD_AGENT=1 in the Cursor dashboard. It should work afterwards." >&2
+    exit 1
 fi
 
 # Required environment variables (from Cursor Secrets)
@@ -73,8 +73,10 @@ if [[ -z "$GPG_PRESET" ]]; then
     GPG_PRESET="/usr/lib/gnupg/gpg-preset-passphrase"
 fi
 
-# Load the passphrase into gpg-agent cache for ALL keys (primary + subkeys).
+# Load the passphrase into gpg-agent cache for all keygrips (primary + subkeys).
 # This ensures gpg will never ask for the passphrase, regardless of which key it uses.
+# As a result, also ensures it works with non-default GPG key setups like using
+# a subkey for signing instead of the primary key.
 for KEYGRIP in $KEYGRIPS; do
     printf '%s' "$GPG_PRIVATE_KEY_PASSPHRASE" | "$GPG_PRESET" --preset "$KEYGRIP"
 done
