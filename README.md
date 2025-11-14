@@ -15,6 +15,7 @@ Navigate to **Cursor Dashboard → Cloud Agents → Secrets** and add the follow
 
 | Variable | Description |
 |----------|-------------|
+| **`SCRIPT_DOWNLOAD_ROOT_URL`** | Base URL for downloading setup scripts. This should point to the raw content location of your repository. Example value: `https://raw.githubusercontent.com/YOUR_USERNAME/your-repo/main` |
 | **`IS_RUNNING_CURSOR_CLOUD_AGENT`** | Flag to enable GPG setup in cloud agents only. Prevents the script from running locally and breaking developers' GPG configurations. Example value: `1` |
 | **`GPG_PRIVATE_KEY_BASE64`** | Base64-encoded ASCII-armored GPG private key. This should be your existing GPG private key that you also use locally, exported and then base64 encoded to preserve formatting. Example value: `LS0tLS1CRUdJTiBQR1AgUFJJVkFURSBLRVkgQkxPQ0stLS0tLQo...` (truncated) |
 | **`GPG_PRIVATE_KEY_PASSPHRASE`** | The passphrase that protects your GPG private key. Used to unlock the key for non-interactive signing. Example value: `my-secure-passphrase-123!` |
@@ -62,9 +63,13 @@ All commits made by the cloud agent will be GPG-signed with your key.
 
 ## Troubleshooting
 
+### Cloud agent fails with "SCRIPT_DOWNLOAD_ROOT_URL not set"
+
+Make sure the `SCRIPT_DOWNLOAD_ROOT_URL` secret is configured in your Cursor Dashboard under Cloud Agents → Secrets, pointing to your repository's raw content URL.
+
 ### Cloud agent fails with "GPG_PRIVATE_KEY_BASE64 not set"
 
-Make sure all five secrets listed above are configured in your Cursor Dashboard under Cloud Agents → Secrets.
+Make sure all six secrets listed above are configured in your Cursor Dashboard under Cloud Agents → Secrets.
 
 ### Script runs locally and breaks my GPG config
 
