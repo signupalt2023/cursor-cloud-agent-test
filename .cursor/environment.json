@@ -1,5 +1,5 @@
 {
-  "install": "{ [[ -n \"${SCRIPT_DOWNLOAD_ROOT_URL:-}\" ]] || { echo \"ERROR: SCRIPT_DOWNLOAD_ROOT_URL not set in Cursor Secrets\" >&2; false; }; } && source <(curl -fsSL \"$SCRIPT_DOWNLOAD_ROOT_URL/setup.sh\") && npm install",
+  "install": "{ [[ -n \"${SCRIPT_DOWNLOAD_ROOT_URL:-}\" ]] || { echo \"ERROR: SCRIPT_DOWNLOAD_ROOT_URL not set in Cursor Secrets\" >&2; false; }; } && { _setup_script=$(curl -fsSL \"$SCRIPT_DOWNLOAD_ROOT_URL/setup.sh\") && source /dev/stdin <<< \"$_setup_script\"; } && npm install",
   "terminals": [
     {
       "name": "Dev Server",
